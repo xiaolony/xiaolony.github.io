@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title><![CDATA[如何工作]]></title>
+    <url>%2F2019%2F10%2Fhow-to-work.html</url>
+    <content type="text"><![CDATA[任务到手先思考 开始之前先规划 复杂问题先解耦 团队协作先约定 任务完成先自检]]></content>
+      <categories>
+        <category>学习笔记</category>
+      </categories>
+      <tags>
+        <tag>经验之谈</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[VsCode 终端中文乱码解决办法]]></title>
+    <url>%2F2018%2F12%2Fvscode-terminal-chinese-garbled.html</url>
+    <content type="text"><![CDATA[最近换了 Debian 9 的系统，重新部署了一下开发环境。在安装完 VsCode 之后，发现在终端里输出中文文件名时出现一堆 ??? 。 原因分析 不能正确输出你想要的文字时，一是可能你写错了，二是计算机不认识。所以如果能保证自己没写错，那就是计算机不认识你写的东西了，也就是说编码或者相关语言配置不对了。 问题解决 既然知道了大概的原因了，那就看一下目前在 VsCode 终端里是使用的什么语言和编码吧。 使用 locale 命令 或者 echo 输出一下要查看的环境变量。 我这里用的是 locale 命令查看全部的语言环境设置，发现设置的值是 en_US.UTF-8，编码没问题，但是语言却是英语（美国）而不是中文（简体）。 使用 LANG=&quot;zh_CN.UTF-8 临时设置一下环境变量， 重新输出一下中文文件名，发现输出正常了。 找到解决办法了，但是这是一种临时生效的方法，怎样才能让它长期生效呢？ VsCode 配置文件里有一个配置项 terminal.integrated.env.* 可以添加环境变量到 VsCode 进程中, 因为我是 linux 系统，所以在配置文件 setting.json 中使用 terminal.integrated.env.linux 来配置： 123"terminal.integrated.env.linux": &#123; "LC_ALL": "zh_CN.UTF-8"&#125; 配置后保存，重启 VsCode 终端， 生效。 举一反三 如果在使用 linux 的时候发现内置终端的中文乱码，也是可以采用这种方法来解决的，修改 .bashrc 文件可以长期修改环境变量。]]></content>
+      <categories>
+        <category>学习笔记</category>
+      </categories>
+      <tags>
+        <tag>开发工具</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[公平的糖果交换]]></title>
+    <url>%2F2018%2F08%2Ffair-candy-swap.html</url>
+    <content type="text"><![CDATA[1234567爱丽丝和鲍勃有不同大小的糖果棒：A[i] 是爱丽丝拥有的第 i 块糖的大小，B[j] 是鲍勃拥有的第 j 块糖的大小。因为他们是朋友，所以他们想交换一个糖果棒，这样交换后，他们都有相同的糖果总量。（一个人拥有的糖果总量是他们拥有的糖果棒大小的总和。）返回一个整数数组 ans，其中 ans[0] 是爱丽丝必须交换的糖果棒的大小，ans[1] 是 Bob 必须交换的糖果棒的大小。如果有多个答案，你可以返回其中任何一个。保证答案存在。 示例 1： 12输入：A = [1,1], B = [2,2]输出：[1,2] 示例 2： 12输入：A = [1,2], B = [2,3]输出：[1,2] 示例 3： 12输入：A = [2], B = [1,3]输出：[2,3] 示例 4： 12输入：A = [1,2,5], B = [2,4]输出：[5,4] 123456789101112131415161718192021222324252627282930class Solution &#123;public: vector&lt;int&gt; fairCandySwap(vector&lt;int&gt;&amp; A, vector&lt;int&gt;&amp; B) &#123; vector&lt;int&gt; result; int sumA = 0, sumB = 0; // 计算各自糖果数量 for (int a: A) sumA += a; for (int b: B) sumB += b; // 交换 for (int i = 0; i &lt; A.size(); i++) &#123; int x = A[i]; for (int j = 0; j &lt; B.size(); j++) &#123; int y = B[j]; int tmpA = sumA - x + y; int tmpB = sumB - y + x; if (tmpA == tmpB) &#123; result.emplace_back(x); result.emplace_back(y); return result; &#125; &#125; &#125; return result; &#125;&#125;;]]></content>
+      <categories>
+        <category>LeetCode</category>
+      </categories>
+      <tags>
+        <tag>数组</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[长度最小的子数组]]></title>
+    <url>%2F2018%2F08%2Fminimum-size-subarray-sum.html</url>
+    <content type="text"><![CDATA[给定一个含有 n 个正整数的数组和一个正整数 s ，找出该数组中满足其和 ≥ s 的长度最小的连续子数组。如果不存在符合条件的连续子数组，返回 0。 示例: 123输入: s = 7, nums = [2,3,1,2,4,3]输出: 2解释: 子数组 [4,3] 是该条件下的长度最小的连续子数组。 12345678910111213141516class Solution &#123;public: int minSubArrayLen(int s, vector&lt;int&gt;&amp; nums) &#123; if (nums.size() == 0) return 0; int i = 0, j = 0, sum = 0, min = INT_MAX; while (j &lt; nums.size()) &#123; sum += nums[j++]; while (sum &gt;= s) &#123; min = (min &lt; j - i) ? min : (j - i); sum -= nums[i++]; &#125; &#125; return min == INT_MAX ? 0 : min; &#125;&#125;;]]></content>
+      <categories>
+        <category>LeetCode</category>
+      </categories>
+      <tags>
+        <tag>数组</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[亲密字符串]]></title>
+    <url>%2F2018%2F08%2Fbuddy-strings.html</url>
+    <content type="text"><![CDATA[给定两个由小写字母构成的字符串 A 和 B ，只要我们可以通过交换 A 中的两个字母得到与 B 相等的结果，就返回 true ；否则返回 false 。 示例 1： 12输入： A = &quot;ab&quot;, B = &quot;ba&quot;输出： true 示例 2： 12输入： A = &quot;ab&quot;, B = &quot;ab&quot;输出： false 示例 3: 12输入： A = &quot;aa&quot;, B = &quot;aa&quot;输出： true 示例 4： 12输入： A = &quot;aaaaaaabc&quot;, B = &quot;aaaaaaacb&quot;输出： true 示例 5： 12输入： A = &quot;&quot;, B = &quot;aa&quot;输出： false 123456789101112131415161718192021222324252627282930class Solution &#123;public: bool buddyStrings(string A, string B) &#123; if (A.size() != B.size()) return false; if (A == B) &#123; vector&lt;int&gt; count(26, 0); for (int i = 0; i &lt; A.size(); ++i) count[A[i] - 'a']++; for (int c: count) if (c &gt; 1) return true; return false; &#125; else &#123; int first = -1, second = -1; for (int i = 0; i &lt; A.size(); ++i) &#123; if (A[i] != B[i]) &#123; if (first == -1) first = i; else if (second == -1) second = i; else return false; &#125; &#125; return (second != -1 &amp;&amp; A[first] == B[second] &amp;&amp; A[second] == B[first]); &#125; &#125;&#125;;]]></content>
+      <categories>
+        <category>LeetCode</category>
+      </categories>
+      <tags>
+        <tag>字符串</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[最长的斐波那契子序列的长度]]></title>
+    <url>%2F2018%2F08%2Flength-of-longest-fibonacci-subsequence.html</url>
+    <content type="text"><![CDATA[如果序列 X_1, X_2, …, X_n 满足下列条件，就说它是 斐波那契式 的： n &gt;= 3 对于所有 i + 2 &lt;= n，都有 X_i + X_{i+1} = X_{i+2} 给定一个严格递增的正整数数组形成序列，找到 A 中最长的斐波那契式的子序列的长度。如果一个不存在，返回 0 。 示例 1： 1234输入: [1,2,3,4,5,6,7,8]输出: 5解释:最长的斐波那契式子序列为：[1,2,3,5,8] 。 示例 2： 12345输入: [1,3,7,11,12,14,18]输出: 3解释:最长的斐波那契式子序列有：[1,11,12]，[3,11,14] 以及 [7,11,18] 。 12345678910111213141516171819202122class Solution &#123;public: int lenLongestFibSubseq(vector&lt;int&gt;&amp; A) &#123; int N = A.size(); unordered_map&lt;int, int&gt; index; for (int i = 0; i &lt; N; ++i) index[A[i]] = i; unordered_map&lt;int, int&gt; longest; int ans = 0; for (int k = 0; k &lt; N; ++k) for (int j = 0; j &lt; k; ++j) &#123; if (A[k] - A[j] &lt; A[j] &amp;&amp; index.count(A[k] - A[j])) &#123; int i = index[A[k] - A[j]]; longest[j * N + k] = longest[i * N + j] + 1; ans = max(ans, longest[j * N + k] + 2); &#125; &#125; return ans &gt;= 3 ? ans : 0; &#125;&#125;;]]></content>
+      <categories>
+        <category>LeetCode</category>
+      </categories>
+      <tags>
+        <tag>数组</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[括号生成]]></title>
+    <url>%2F2018%2F08%2Fgenerate-prentheses.html</url>
+    <content type="text"><![CDATA[给出 n 代表生成括号的对数，请你写出一个函数，使其能够生成所有可能的并且有效的括号组合。 例如，给出 n = 3，生成结果为： 1234567[ &quot;((()))&quot;, &quot;(()())&quot;, &quot;(())()&quot;, &quot;()(())&quot;, &quot;()()()&quot;] 123456789101112131415class Solution &#123;public: vector&lt;string&gt; generateParenthesis(int n) &#123; vector&lt;string&gt; ans; if (n == 0) &#123; ans.push_back(""); &#125; else &#123; for (int c = 0; c &lt; n; ++c) for (string right: generateParenthesis(c)) for (string left: generateParenthesis(n-1-c)) ans.push_back("(" + left + ")" + right); &#125; return ans; &#125;&#125;;]]></content>
+      <categories>
+        <category>LeetCode</category>
+      </categories>
+      <tags>
+        <tag>字符串</tag>
+        <tag>数组</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[移除元素]]></title>
+    <url>%2F2018%2F08%2Fremove-element.html</url>
+    <content type="text"><![CDATA[给定一个数组 nums 和一个值 val，你需要原地移除所有数值等于 val 的元素，返回移除后数组的新长度。 不要使用额外的数组空间，你必须在原地修改输入数组并在使用 O(1) 额外空间的条件下完成。 元素的顺序可以改变。你不需要考虑数组中超出新长度后面的元素。 示例 1: 12345给定 nums = [3,2,2,3], val = 3,函数应该返回新的长度 2, 并且 nums 中的前两个元素均为 2。你不需要考虑数组中超出新长度后面的元素。 示例 2: 1234567给定 nums = [0,1,2,2,3,0,4,2], val = 2,函数应该返回新的长度 5, 并且 nums 中的前五个元素为 0, 1, 3, 0, 4。注意这五个元素可为任意顺序。你不需要考虑数组中超出新长度后面的元素。 12345678910111213class Solution &#123;public: int removeElement(vector&lt;int&gt;&amp; nums, int val) &#123; int i = 0; for (int j = 0; j &lt; nums.size(); j++) &#123; if (nums[j] != val) &#123; nums[i] = nums[j]; i++; &#125; &#125; return i; &#125;&#125;;]]></content>
+      <categories>
+        <category>LeetCode</category>
+      </categories>
+      <tags>
+        <tag>数组</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[删除排序数组中的重复项]]></title>
+    <url>%2F2018%2F08%2Fremove-duplicates-from-sorted-array.html</url>
+    <content type="text"><![CDATA[给定一个排序数组，你需要在原地删除重复出现的元素，使得每个元素只出现一次，返回移除后数组的新长度。 不要使用额外的数组空间，你必须在原地修改输入数组并在使用 O(1) 额外空间的条件下完成。 示例 1: 12345给定数组 nums = [1,1,2], 函数应该返回新的长度 2, 并且原数组 nums 的前两个元素被修改为 1, 2。 你不需要考虑数组中超出新长度后面的元素。 示例 2: 12345给定 nums = [0,0,1,1,1,2,2,3,3,4],函数应该返回新的长度 5, 并且原数组 nums 的前五个元素被修改为 0, 1, 2, 3, 4。你不需要考虑数组中超出新长度后面的元素。 1234567891011121314class Solution &#123;public: int removeDuplicates(vector&lt;int&gt;&amp; nums) &#123; if (nums.size() == 0) return 0; int i = 0; for (int j = 1; j &lt; nums.size(); j++) &#123; if (nums[j] != nums[i]) &#123; i++; nums[i] = nums[j]; &#125; &#125; return i + 1; &#125;&#125;;]]></content>
+      <categories>
+        <category>LeetCode</category>
+      </categories>
+      <tags>
+        <tag>数组</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[盛最多水的容器]]></title>
+    <url>%2F2018%2F08%2Fcontainer-with-most-water.html</url>
+    <content type="text"><![CDATA[给定 n 个非负整数 a1,a2,...,ana_{1}, a_{2}, ..., a_{n}a1​,a2​,...,an​，每个数代表坐标中的一个点 (i, aia_{i}ai​) 。在坐标内画 n 条垂直线，垂直线 i 的两个端点分别为 (i, aia_{i}ai​) 和 (i, 0)。找出其中的两条线，使得它们与 x 轴共同构成的容器可以容纳最多的水。 说明：你不能倾斜容器，且 n 的值至少为 2。 图中垂直线代表输入数组 [1,8,6,2,5,4,8,3,7]。在此情况下，容器能够容纳水（表示为蓝色部分）的最大值为 49。 示例: 12输入: [1,8,6,2,5,4,8,3,7]输出: 49 1234567891011121314class Solution &#123;public: int maxArea(vector&lt;int&gt;&amp; height) &#123; int maxarea = 0, l = 0, r = height.size() - 1; while (l &lt; r) &#123; maxarea = max(maxarea, min(height[l], height[r]) * (r - l)); if (height[l] &lt; height[r]) l++; else r--; &#125; return maxarea; &#125;&#125;;]]></content>
+      <categories>
+        <category>LeetCode</category>
+      </categories>
+      <tags>
+        <tag>数组</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[正则表达式匹配]]></title>
+    <url>%2F2018%2F08%2Fregular-expression-matching.html</url>
+    <content type="text"><![CDATA[给定一个字符串 (s) 和一个字符模式 §。实现支持 ‘.’ 和 ‘*’ 的正则表达式匹配。 12&apos;.&apos; 匹配任意单个字符。&apos;*&apos; 匹配零个或多个前面的元素。 匹配应该覆盖整个字符串 (s) ，而不是部分字符串。 说明: s 可能为空，且只包含从 a-z 的小写字母。 p 可能为空，且只包含从 a-z 的小写字母，以及字符 . 和 *。 示例 1: 12345输入:s = &quot;aa&quot;p = &quot;a&quot;输出: false解释: &quot;a&quot; 无法匹配 &quot;aa&quot; 整个字符串。 示例 2: 12345输入:s = &quot;aa&quot;p = &quot;a*&quot;输出: true解释: &apos;*&apos; 代表可匹配零个或多个前面的元素, 即可以匹配 &apos;a&apos; 。因此, 重复 &apos;a&apos; 一次, 字符串可变为 &quot;aa&quot;。 示例 3: 12345输入:s = &quot;ab&quot;p = &quot;.*&quot;输出: true解释: &quot;.*&quot; 表示可匹配零个或多个(&apos;*&apos;)任意字符(&apos;.&apos;)。 示例 4: 12345输入:s = &quot;aab&quot;p = &quot;c*a*b&quot;输出: true解释: &apos;c&apos; 可以不被重复, &apos;a&apos; 可以被重复一次。因此可以匹配字符串 &quot;aab&quot;。 示例 5: 1234输入:s = &quot;mississippi&quot;p = &quot;mis*is*p*.&quot;输出: false 12345678910111213141516171819202122232425class Solution &#123;public: bool isMatch(string s, string p) &#123; int slen = s.size(), plen = p.size(); vector&lt;vector&lt;bool&gt;&gt; dp(slen+1, vector&lt;bool&gt;(plen+1)); dp[0][0] = true; for (int i = 1; i &lt;= slen; ++i)&#123; dp[i][0] = false; &#125; for (int j = 2; j &lt;= plen; ++j)&#123; dp[0][j] = p[j - 1] == '*' &amp;&amp; dp[0][j - 2]; &#125; for (int i = 1; i &lt;= slen; ++i)&#123; for (int j = 1; j &lt;= plen; ++j)&#123; if (p[j - 1] == '*')&#123; dp[i][j] = dp[i][j - 2] || (dp[i - 1][j] &amp;&amp; (p[j - 2] == '.' || p[j - 2] == s[i - 1])); &#125; else&#123; dp[i][j] = dp[i-1][j-1] &amp;&amp; (s[i-1] == p[j-1] || '.' == p[j-1]); &#125; &#125; &#125; return dp[slen][plen]; &#125;&#125;;]]></content>
+      <categories>
+        <category>LeetCode</category>
+      </categories>
+      <tags>
+        <tag>字符串</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[【Linux 高性能服务器编程】 系统监测工具]]></title>
+    <url>%2F2018%2F08%2Fhigh-performance-linux-server-programming-2.html</url>
+    <content type="text"><![CDATA[Linux 提供了很多有用的工具， 以方便开发人员调试和测评服务器程序。 tcpdump: 一款经典的网络抓包工具。 lsof: 一个列出当前系统打开的文件描述符的工具。 nc: 主要被用来快速构建网络连接。 strace: 测试服务器性能。它跟踪程序运行过程中执行的系统调用和接收到的信号，并将系统调用名、参数、返回值及信号名输出到标准输出或者指定的文件。 netstat: 一个功能强大的网络信息统计工具。它可以打印本地网上接口上的全部连接、路由表信息、网卡接口信息等。 vmstat: 实时输出系统的各种资源的使用情况。 ifstat: 简单的网络流量监测工具。 mpstat: 实时监测多处理器系统上的每个 CPU 的使用情况。]]></content>
+      <categories>
+        <category>读书</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[【Linux 高性能服务器编程】 TCP/IP 协议详解]]></title>
+    <url>%2F2018%2F08%2Fhigh-performance-linux-server-programming-1.html</url>
+    <content type="text"><![CDATA[TCP/IP 协议族 IP 协议详解 TCP 协议详解 TCP/IP 协议族 TCP/IP 体系结构 数据链路层（ARP、RARP）：实现了网卡接口的网络驱动程序，以处理数据在物理媒介上的传输。 网络层（IP、ICMP）：实现数据包的选路和转发。 传输层（TCP、UDP、SCTP）： 为两台主机上的应用程序提供端到端的通信。 应用层（telnet、OSPF、DNS）：处理应用程序的逻辑。 封装 通过封装实现上层协议使用下层协议提供的服务。 分用 各层协议各司其职，处理传输过来的帧，再交给目标应用程序。 IP 协议详解 IP 协议是TCP/IP 协议族的动力，它为上层协议提供无状态、无连接、不可靠的服务。 TCP 协议详解 与 IP 协议相比，TCP 协议更靠近应用层，因此在应用程序中具有更强的可操作性。]]></content>
+      <categories>
+        <category>读书</category>
+      </categories>
+      <tags>
+        <tag>TCP/IP</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[回文数]]></title>
+    <url>%2F2018%2F08%2Fpalindrome-number.html</url>
+    <content type="text"><![CDATA[判断一个整数是否是回文数。回文数是指正序（从左向右）和倒序（从右向左）读都是一样的整数。 示例 1: 12输入: 121输出: true 示例 2: 123输入: -121输出: false解释: 从左向右读, 为 -121 。 从右向左读, 为 121- 。因此它不是一个回文数。 示例 3: 123输入: 10输出: false解释: 从右向左读, 为 01 。因此它不是一个回文数。 进阶: 你能不将整数转为字符串来解决这个问题吗？ 1234567891011121314151617class Solution &#123;public: bool isPalindrome(int x) &#123; // 排除小于0或能被10整除且不为0的数 if (x &lt; 0 || (x % 10 == 0 &amp;&amp; x != 0)) &#123; return false; &#125; int revertedNumber = 0; while(x &gt; revertedNumber) &#123; revertedNumber = revertedNumber * 10 + x % 10; x /= 10; &#125; return x == revertedNumber || x == revertedNumber/10; &#125;&#125;;]]></content>
+      <categories>
+        <category>LeetCode</category>
+      </categories>
+      <tags>
+        <tag>整数</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[反转整数]]></title>
+    <url>%2F2018%2F07%2Freverse-integer.html</url>
+    <content type="text"><![CDATA[给定一个 32 位有符号整数，将整数中的数字进行反转。 示例 1: 12输入: 123输出: 321 示例 2: 12输入: -123输出: -321 示例 3: 12输入: 120输出: 21 注意: 假设我们的环境只能存储 32 位有符号整数，其数值范围是 [−231, 231 − 1]。根据这个假设，如果反转后的整数溢出，则返回 0。 123456789101112131415class Solution &#123;public: int reverse(int x) &#123; int res = 0; while (x != 0) &#123; int pop = x % 10; x /= 10; if (res &gt; INT_MAX/10 || (res == INT_MAX / 10 &amp;&amp; pop &gt; 7)) return 0; if (res &lt; INT_MIN/10 || (res == INT_MIN / 10 &amp;&amp; pop &lt; -8)) return 0; res = pop + res * 10; &#125; return res; &#125;&#125;;]]></content>
+      <categories>
+        <category>LeetCode</category>
+      </categories>
+      <tags>
+        <tag>整数</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[字符串转整数]]></title>
+    <url>%2F2018%2F07%2Fstring-to-integer.html</url>
+    <content type="text"><![CDATA[123456789实现 atoi，将字符串转为整数。在找到第一个非空字符之前，需要移除掉字符串中的空格字符。如果第一个非空字符是正号或负号，选取该符号，并将其与后面尽可能多的连续的数字组合起来，这部分字符即为整数的值。如果第一个非空字符是数字，则直接将其与之后连续的数字字符组合起来，形成整数。字符串可以在形成整数的字符后面包括多余的字符，这些字符可以被忽略，它们对于函数没有影响。当字符串中的第一个非空字符序列不是个有效的整数；或字符串为空；或字符串仅包含空白字符时，则不进行转换。若函数不能执行有效的转换，返回 0。 说明： 假设我们的环境只能存储 32 位有符号整数，其数值范围是 [−231, 231 − 1]。如果数值超过可表示的范围，则返回 INT_MAX (231 − 1) 或 INT_MIN (−231) 。 示例 1: 12输入: &quot;42&quot;输出: 42 示例 2: 1234输入: &quot; -42&quot;输出: -42解释: 第一个非空白字符为 &apos;-&apos;, 它是一个负号。 我们尽可能将负号与后面所有连续出现的数字组合起来，最后得到 -42 。 示例 3: 123输入: &quot;4193 with words&quot;输出: 4193解释: 转换截止于数字 &apos;3&apos; ，因为它的下一个字符不为数字。 示例 4: 1234输入: &quot;words and 987&quot;输出: 0解释: 第一个非空字符是 &apos;w&apos;, 但它不是数字或正、负号。 因此无法执行有效的转换。 示例 5: 1234输入: &quot;-91283472332&quot;输出: -2147483648解释: 数字 &quot;-91283472332&quot; 超过 32 位有符号整数范围。 因此返回 INT_MIN (−231) 。 1234567891011121314151617181920212223242526272829303132class Solution &#123;public: int myAtoi(string str) &#123; // 无效情况 if (str.size() == 0) return 0; int sign = 1; int res = 0; int i = 0; // 排除前缀空字符 while (str[i] == ' ') i++; if (str[i] == '-' || str[i] == '+') sign = str[i++] == '-' ? -1 : 1; while (i &lt; str.size() &amp;&amp; str[i] &gt;= '0' &amp;&amp; str[i] &lt;= '9') &#123; // 溢出情况 if (res &gt; INT_MAX / 10 || (res == INT_MAX / 10 &amp;&amp; str[i] - '0' &gt; 7)) &#123; return (sign == 1) ? INT_MAX : INT_MIN; &#125; res = 10 * res + (str[i++] - '0'); &#125; return res * sign; &#125;&#125;;]]></content>
+      <categories>
+        <category>LeetCode</category>
+      </categories>
+      <tags>
+        <tag>字符串</tag>
+        <tag>整数</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Z字形变换]]></title>
+    <url>%2F2018%2F07%2Fzigzag-conversion.html</url>
+    <content type="text"><![CDATA[将字符串 “PAYPALISHIRING” 以Z字形排列成给定的行数： 123P A H NA P L S I I GY I R 之后从左往右，逐行读取字符：“PAHNAPLSIIGYIR” 实现一个将字符串进行指定行数变换的函数: string convert(string s, int numRows); 示例 1: 12输入: s = &quot;PAYPALISHIRING&quot;, numRows = 3输出: &quot;PAHNAPLSIIGYIR&quot; 示例 2: 1234567输入: s = &quot;PAYPALISHIRING&quot;, numRows = 4输出: &quot;PINALSIGYAHRPI&quot;解释:P I NA L S I GY A H RP I 123456789101112131415161718192021class Solution &#123;public: string convert(string s, int numRows) &#123; int len = s.size(); if (len == 0 || numRows == 0 || numRows == 1) return s; string res; int cycleLen = 2 * numRows - 2; for (int i = 0; i &lt; numRows; i++) &#123; for (int j = 0; j + i &lt; len; j += cycleLen) &#123; res += s[j + i]; if (i != 0 &amp;&amp; i != numRows - 1 &amp;&amp; j + cycleLen - i &lt; len) res += s[j + cycleLen - i]; &#125; &#125; return res; &#125;&#125;;]]></content>
+      <categories>
+        <category>LeetCode</category>
+      </categories>
+      <tags>
+        <tag>字符串</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[最长回文子串]]></title>
+    <url>%2F2018%2F07%2Flongest-palindromic-substring.html</url>
+    <content type="text"><![CDATA[给定一个字符串 s，找到 s 中最长的回文子串。你可以假设 s 的最大长度为1000。 示例 1： 123输入: &quot;babad&quot;输出: &quot;bab&quot;注意: &quot;aba&quot;也是一个有效答案。 示例 2： 12输入: &quot;cbbd&quot;输出: &quot;bb&quot; 1234567891011121314151617181920212223242526class Solution &#123;public: string longestPalindrome(string s) &#123; int start = 0, end = 0; for (int i = 0; i &lt; s.length(); i++) &#123; int len1 = expandAroundCenter(s, i, i); int len2 = expandAroundCenter(s, i, i + 1); int len = max(len1, len2); if (len &gt; end - start) &#123; start = i - (len - 1) / 2; end = i + len / 2; &#125; &#125; return s.substr(start, end - start + 1); &#125;private: int expandAroundCenter(string s, int left, int right) &#123; int L = left, R = right; while (L &gt;= 0 &amp;&amp; R &lt; s.length() &amp;&amp; s[L] == s[R]) &#123; L--; R++; &#125; return R - L - 1; &#125;&#125;;]]></content>
+      <categories>
+        <category>LeetCode</category>
+      </categories>
+      <tags>
+        <tag>字符串</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[两个排序数组的中位数]]></title>
+    <url>%2F2018%2F07%2Fmedian-of-two-sorted-arrays.html</url>
+    <content type="text"><![CDATA[给定两个大小为 m 和 n 的有序数组 nums1 和 nums2 。 请找出这两个有序数组的中位数。要求算法的时间复杂度为 O(log (m+n)) 。 示例 1: 1234nums1 = [1, 3]nums2 = [2]中位数是 2.0 示例 2: 1234nums1 = [1, 2]nums2 = [3, 4]中位数是 (2 + 3)/2 = 2.5 12345678910111213141516171819202122232425262728293031323334353637class Solution &#123;public: double findMedianSortedArrays(vector&lt;int&gt;&amp; nums1, vector&lt;int&gt;&amp; nums2) &#123; int m = nums1.size(); int n = nums2.size(); if (m &gt; n) &#123; vector&lt;int&gt; temp = nums1; nums1 = nums2; nums2 = temp; int tmp = m; m = n; n = tmp; &#125; int iMin = 0, iMax = m, halfLen = (m + n + 1) / 2; while (iMin &lt;= iMax) &#123; int i = (iMin + iMax) / 2; int j = halfLen - i; if (i &lt; iMax &amp;&amp; nums2[j-1] &gt; nums1[i])&#123; iMin = iMin + 1; // i is too small &#125; else if (i &gt; iMin &amp;&amp; nums1[i-1] &gt; nums2[j]) &#123; iMax = iMax - 1; // i is too big &#125; else &#123; // i is perfect int maxLeft = 0; if (i == 0) &#123; maxLeft = nums2[j-1]; &#125; else if (j == 0) &#123; maxLeft = nums1[i-1]; &#125; else &#123; maxLeft = max(nums1[i-1], nums2[j-1]); &#125; if ( (m + n) % 2 == 1 ) &#123; return maxLeft; &#125; int minRight = 0; if (i == m) &#123; minRight = nums2[j]; &#125; else if (j == n) &#123; minRight = nums1[i]; &#125; else &#123; minRight = min(nums2[j], nums1[i]); &#125; return (maxLeft + minRight) / 2.0; &#125; &#125; return 0; &#125;&#125;;]]></content>
+      <categories>
+        <category>LeetCode</category>
+      </categories>
+      <tags>
+        <tag>数组</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[在Jupyter Notebook中使用pip]]></title>
+    <url>%2F2018%2F07%2Fjupyter-use-pip.html</url>
+    <content type="text"><![CDATA[在Jupyter Notebook中使用 pip 安装 python 包 !pip install &lt;package&gt; 以此类推，在 Jupyter Notebook中使用命令行即在命令前加上!即可]]></content>
+      <categories>
+        <category>学习笔记</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>Jupyter</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[接口就是大纲]]></title>
+    <url>%2F2018%2F07%2Finterface-as-schematic.html</url>
+    <content type="text"><![CDATA[Interfaces are helpful for developing a “skeleton” of defined functionality provided by your application. Use them during the design phase of a component to facilicate design discussion amongst your team. For example, define a BillingNotifierInterface and discuss its methods with your team. Use the interface to agree on a good API before you actually write any implementation code! 接口在开发程序的“骨架”时非常有用。 在设计组件时，使用接口进行设计和讨论都是对你的团队有益处的。比如定义一个BillingNotifierInterface然后讨论他有什么方法。在写任何实现代码前先用接口讨论好一套好的API！ – 「从百草园到三味书屋 “From Apprentice To Artisan”」]]></content>
+      <categories>
+        <category>学习笔记</category>
+      </categories>
+      <tags>
+        <tag>设计模式</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[依赖注入&loc控制反转容器]]></title>
+    <url>%2F2018%2F07%2FDI-loc-Container.html</url>
+    <content type="text"><![CDATA[Laravel框架的基 础是一个功能强大的控制反转容器（IoC container）。 为了真正理解本框架，需要好好掌握该容器。但我们要搞清楚，控制反转容器只是一种用于方便实现“依赖注入”的工具。要实现依赖注入并不一定需要控制反转容器，只是用容器会更方便和容易一点儿。 --「从百草园到三味书屋 “From Apprentice To Artisan”」 依赖注入 方便控制器与逻辑层解耦 loc容器 使 依赖注入 便于管理]]></content>
+      <categories>
+        <category>学习笔记</category>
+      </categories>
+      <tags>
+        <tag>设计模式</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[无重复字符的最长子串]]></title>
+    <url>%2F2018%2F07%2Flongest-substring-without-repeating-characters.html</url>
+    <content type="text"><![CDATA[给定一个字符串，找出不含有重复字符的最长子串的长度。 示例： 12345给定 &quot;abcabcbb&quot; ，没有重复字符的最长子串是 &quot;abc&quot; ，那么长度就是3。给定 &quot;bbbbb&quot; ，最长的子串就是 &quot;b&quot; ，长度是1。给定 &quot;pwwkew&quot; ，最长子串是 &quot;wke&quot; ，长度是3。请注意答案必须是一个子串，&quot;pwke&quot; 是 子序列 而不是子串。 123456789101112131415class Solution &#123;public: int lengthOfLongestSubstring(string s) &#123; vector&lt;int&gt; dict(256, -1); int maxLen = 0, start = -1; for (int i = 0; i &lt; s.size(); i++) &#123; start = max(dict[s[i]], start); // 有重复则重置起点 dict[s[i]] = i; maxLen = max(maxLen, i - start); &#125; return maxLen; &#125;&#125;;]]></content>
+      <categories>
+        <category>LeetCode</category>
+      </categories>
+      <tags>
+        <tag>字符串</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[The Descent]]></title>
+    <url>%2F2018%2F07%2Fthe-descent.html</url>
+    <content type="text"><![CDATA[Destroy the mountains before your starship collides with one of them. For that, shoot the highest mountain on your path. Rules At the start of each game turn, you are given the height of the 8 mountains from left to right. By the end of the game turn, you must fire on the highest mountain by outputting its index (from 0 to 7). Firing on a mountain will only destroy part of it, reducing its height. Your ship descends after each pass. Game Input Within an infinite loop, read the heights of the mountains from the standard input and print to the standard output the index of the mountain to shoot. Input for one game turn 8 lines: one integer mountainH per line. Each represents the height of one mountain given in the order of their index (from 0 to 7). Output for one game turn A single line with one integer for the index of which mountain to shoot. Constraints 0 ≤ mountainH ≤ 9 Response time per turn ≤ 100ms Code 1234567891011121314151617181920212223import sysimport math# The while loop represents the game.# Each iteration represents a turn of the game# where you are given inputs (the heights of the mountains)# and where you have to print an output (the index of the mountain to fire on)# The inputs you are given are automatically updated according to your last actions.flag = 0# game loopwhile True: max_h = 0 for i in range(8): mountain_h = int(input()) # represents the height of one mountain. if mountain_h &gt; max_h: max_h = mountain_h flag = i # Write an action using print # To debug: print("Debug messages...", file=sys.stderr) # The index of the mountain to fire on. print(flag)]]></content>
+      <categories>
+        <category>CodinGame</category>
+      </categories>
+      <tags>
+        <tag>最大数</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[HTTP缓存]]></title>
+    <url>%2F2018%2F07%2Fhttp-cache.html</url>
+    <content type="text"><![CDATA[HTTP缓存机制 缓存规则 强制缓存 只有在缓存不存在时，才会与服务器产生交互 对比缓存 无论缓存存在与否，都会与服务器产生交互 强制缓存优先级高于对比缓存 对于强制缓存，服务器通知浏览器一个缓存时间，在缓存时间内，下次请求，直接用缓存，不在时间内，执行比较缓存策略。 对于比较缓存，将缓存信息中的Etag和Last-Modified通过请求发送给服务器，由服务器校验，返回304状态码时，浏览器直接使用缓存。]]></content>
+      <categories>
+        <category>学习笔记</category>
+      </categories>
+      <tags>
+        <tag>缓存</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[两数相加]]></title>
+    <url>%2F2018%2F06%2Fadd-two-numbers.html</url>
+    <content type="text"><![CDATA[给定两个非空链表来表示两个非负整数。位数按照逆序方式存储，它们的每个节点只存储单个数字。将两数相加返回一个新的链表。 你可以假设除了数字 0 之外，这两个数字都不会以零开头。 示例： 123输入：(2 -&gt; 4 -&gt; 3) + (5 -&gt; 6 -&gt; 4)输出：7 -&gt; 0 -&gt; 8说明：342 + 465 = 807 123456789101112131415161718192021222324class Solution &#123;public: ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) &#123; ListNode *dummyHead = new ListNode(0); ListNode *p = l1, *q = l2, *curr = dummyHead; int carry = 0; while (p || q || carry) &#123; if (p) &#123; carry += p-&gt;val; p = p-&gt;next; &#125; if (q) &#123; carry += q-&gt;val; q = q-&gt;next; &#125; curr-&gt;next = new ListNode(carry % 10); carry /= 10; curr = curr-&gt;next; &#125; return dummyHead-&gt;next; &#125;&#125;;]]></content>
+      <categories>
+        <category>LeetCode</category>
+      </categories>
+      <tags>
+        <tag>链表</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Laravel 多语言站点]]></title>
+    <url>%2F2018%2F06%2Fmultilang-site.html</url>
+    <content type="text"><![CDATA[Laravel 开发多语言站点 目的 实现多语言站点的开发，用户根据访问 /en、/zh-CN 等浏览不同语言的站点。 开发工具 Laravel 5.5.* URL dimsav/laravel-translatable 8.* URL 安装完成上述工具后，进行开发。 步骤 修改 translatable.php 配置文件 在 translatable.php 文件 locales 中修改站点语言： 1234'locales' =&gt; [ 'en', 'zh-CN',], 修改 RouteServiceProvider.php 文件 123456789101112131415161718192021222324252627282930public function map(Request $request)&#123; $locale = $request-&gt;segment(1); $this-&gt;app-&gt;setLocale($locale); $this-&gt;mapApiRoutes(); $this-&gt;mapWebRoutes($locale); &#125;protected function mapWebRoutes($locale)&#123; if (in_array($locale, $this-&gt;app-&gt;config-&gt;get('translatable.locales'))) &#123; Route::group([ 'middleware' =&gt; 'web', 'prefix' =&gt; $locale, 'namespace' =&gt; $this-&gt;namespace, ], function ($router) &#123; require base_path('routes/web.php'); &#125;); &#125; else &#123; Route::group([ 'middleware' =&gt; 'web', 'namespace' =&gt; $this-&gt;namespace, ], function ($router) &#123; require base_path('routes/web.php'); &#125;); &#125;&#125; 添加语言翻译包 对于我们站点里的静态内容，我们可以通过在 resources/lang 下面添加指定语言包，使用 trans('指定名称') 来进行翻译，详情请见 文档 至此，我们可以通过访问 /en、/zh-CN 浏览指定语言的站点了。但是，我们应该发现，对于我们在数据库里读取的数据并没有发生改变 创建模型及迁移 现在是 dimsav/laravel-translatable 包大展身手的时候了 模型 1234567891011121314151617181920212223242526272829// Article 模型&lt;?phpnamespace App;use Illuminate\Database\Eloquent\Model;use Dimsav\Translatable\Translatable;class Article extends Model&#123; use Translatable; // 引入 Translatable Trait(前提安装dimsav/laravel-translatable) public $translatedAttributes = ['name', 'text']; protected $guarded = ['id'];&#125;// ArticleTranslation 模型&lt;?phpnamespace App;use Illuminate\Database\Eloquent\Model;class ArticleTranslation extends Model&#123; public $timestamps = false; protected $guarded = ['id'];&#125; NOTE: 其中 $translatedAttributes 设置要翻译的字段 迁移 123456789101112131415Schema::create('articles', function (Blueprint $table) &#123; $table-&gt;increments('id'); $table-&gt;boolean('online'); $table-&gt;timestamps();&#125;);Schema::create('article_translations', function (Blueprint $table) &#123; $table-&gt;increments('id'); $table-&gt;integer('article_id')-&gt;unsigned(); $table-&gt;string('locale')-&gt;index(); $table-&gt;string('name'); $table-&gt;text('text'); $table-&gt;unique(['article_id','locale']); $table-&gt;foreign('article_id')-&gt;references('id')-&gt;on('articles')-&gt;onDelete('cascade');&#125;); NOTE: 其中 *_translations 表中必须包含对应表的关联 ID *_id、区域标识 locale及要翻译的字段等 其他 在每次创建模型记录时，使用模型的 translateOrNew() 方法添加翻译内容，如： 1$article-&gt;translateOrNew('zh-CN')-&gt;name = "中文"; 在每次读取模型数据时，直接读取就可以了，其他工作 dimsav/laravel-translatable 包已经做了。 参考文献 Laravel5.5 官方文档 5.3 关于多语言站点的配置 如何为 Eloquent 添加多语言支持]]></content>
+      <categories>
+        <category>学习笔记</category>
+      </categories>
+      <tags>
+        <tag>PHP</tag>
+        <tag>Laravel</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[两数之和]]></title>
+    <url>%2F2018%2F06%2Ftwo-sum.html</url>
+    <content type="text"><![CDATA[给定一个整数数组和一个目标值，找出数组中和为目标值的两个数。 你可以假设每个输入只对应一种答案，且同样的元素不能被重复利用。 示例: 1234给定 nums = [2, 7, 11, 15], target = 9因为 nums[0] + nums[1] = 2 + 7 = 9所以返回 [0, 1] 12345678910111213141516class Solution &#123;public: vector&lt;int&gt; twoSum(vector&lt;int&gt;&amp; nums, int target) &#123; unordered_map&lt;int, int&gt; mapping; vector&lt;int&gt; result; for (int i = 0; i &lt; nums.size(); i++) &#123; const int gap = target - nums[i]; if (mapping.find(gap) != mapping.end()) &#123; result.push_back(mapping[gap]); result.push_back(i); return result; &#125; mapping[nums[i]] = i; &#125; &#125;&#125;;]]></content>
+      <categories>
+        <category>LeetCode</category>
+      </categories>
+      <tags>
+        <tag>数组</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[初探 Swoft —— 安装]]></title>
+    <url>%2F2018%2F03%2Fswoft-installation.html</url>
+    <content type="text"><![CDATA[Swoft 是首个基于 Swoole 原生协程的新时代 PHP 高性能协程全栈框架，内置协程网络服务器及常用的协程客户端，常驻内存，不依赖传统的 PHP-FPM，全异步非阻塞 IO 实现，以类似于同步客户端的写法实现异步客户端的使用，没有复杂的异步回调，没有繁琐的 yield, 有类似 Go 语言的协程、灵活的注解、强大的全局依赖注入容器、完善的服务治理、灵活强大的 AOP、标准的 PSR 规范实现等等，可以用于构建高性能的Web系统、API、中间件、基础服务等等。 —— Swoft 官方文档 最近看到这个新框架，尝试安装玩儿一下，发现这个框架是我见过的安装最简易的框架了（请恕我见识短浅）。当然，这要感谢 Swoft 贡献者大牛们的付出。下面我来说一下 Swoft 的安装步骤吧。 安装前提 在安装之前，请在电脑上安装上 Docker，因为我在这里讲的是 Docker 安装方式，具体安装方法请查阅 Docker官方文档。其次，你的电脑上必须安装了 composer， 具体安装方法请查阅 composer 入门指南 开始安装 下面我讲两种安装方式， 一种是 composer 安装，另一种是手动安装。 Composer 方式 在终端执行以下命令： 1composer create-project swoft/swoft swoft 手动安装方式 首先，你要获取项目包。在这里只写 git clone 方式获取包。 1git clone https://github.com/swoft-cloud/swoft.git 然后，复制 .env.example 为 .env 编辑参数。 1cp .env.example .env 最后， 安装依赖。 1composer install 部署开发环境 Swoft 开发者们已经为我们准备好了 swoft 的 Docker 镜像，以及在项目包里 Dockerfile 和 docker-compose.yml 文件。 Docker 方式 使用官方镜像 如果官方镜像已经满足了你的开发需求，直接使用官方镜像是个不错的选择。 1docker run -d -p 80:80 -name swoft swoft/swoft 自定义镜像 如果你感觉官方镜像不能满足你的需求，可以根据自己的需求通过修改 Dockerfile 文件来自定义镜像。修改完 Dockerfile 文件后，执行以下命令： 12docker build -t swoft/swoft .docker run -d -p 80:80 --name swoft swoft/swoft 其他命令 前面已经使用 --name 选项将容器命名为 swoft 了 12345// 进入工作台docker exec -it swoft bash// 停止容器运行docker stop swoft Docker-Compose 方式 运行 docker-compose up -d swoft 即可运行容器； 运行 docker-compose exec swoft 进入工作台； 运行 docker-compose stop swoft 停止容器； 更多 Docker 相关命令请查阅 Docker官方文档 运行 Swoft 安装完成后，我们就要检查一下 Swoft 是否能够成功运行。 Docker 镜像中已经包含执行了 php bin/swoft start 命令，因此我们无需操作。 如果你采用其他方式部署安装，请记得执行此命令。 在这里，我们直接访问 http://localhost ，出现 Swoft 字样的页面即代表我们安装成功！]]></content>
+      <categories>
+        <category>学习笔记</category>
+      </categories>
+      <tags>
+        <tag>PHP</tag>
+        <tag>Swoole</tag>
+        <tag>Swoft</tag>
+        <tag>Docker</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[SOLID原则]]></title>
+    <url>%2F2017%2F11%2Fsolid.html</url>
+    <content type="text"><![CDATA[SOLID敏捷开发的五种原则。 单一职责 A Class should have only one reason to change. 单一职责(SRP),意思是一个类应该只有一个发生变化的原因，即一个类应该只为一项业务而定义。 开闭原则 Software entities (classes, modules, functions, etc) should be open for extension, but closed for modification. 开闭原则(OCP),意思是当我们在设计一个类（模块或函数，等）时，应该使其可扩展，而不应该在其上作修改。 里氏代换原则 Subtypes must be substitutable for their base types. 里氏替换原则(LSP),意思是子类必须可替换其基类。 接口隔离原则 The interface-segregation principle(ISP) states that no client should be forced to depend on methods it does not use. 接口隔离原则(ISP)代表着用户不需要依赖他不需要的接口。 依赖倒转原则 A. High-level modules should not depend on low-level modules. Both should depend on abstractions. 高级模块不应该依赖于低级模块； 它们都应该依赖于抽象。 B. Abstractions should not depend upon details. Details should depend upon abstractions. 抽象不应该取决于细节； 细节应该取决于抽象。 参考自《The SOLID Principles》]]></content>
+      <categories>
+        <category>学习笔记</category>
+      </categories>
+      <tags>
+        <tag>设计模式</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Travis-ci自动集成Hexo个人博客]]></title>
+    <url>%2F2017%2F09%2Ftravis-ci.html</url>
+    <content type="text"><![CDATA[自动化部署静态博客 第一步， 在Github上新建一个仓库，用作存放博客；内设两个分支， 一个存放部署后即在网页中显示的内容， 另一个则存放部署前即Hexo源码内容。 第二步， 本地初始化Hexo项目，并将其初始化为git项目；在项目目录下新建.travis.yml文件，内容如下： 1234567891011121314151617181920212223242526language: node_jsnode_js: stableinstall: - npm installscript: - hexo clean - hexo gafter_script: - cd ./public - git init - git config user.name &quot;用户名&quot; - git config user.email &quot;邮箱&quot; - git add . - git commit -m &quot;update&quot; - git push --force --quiet &quot;https://$&#123;GH_TOKEN&#125;@$&#123;GH_REF&#125;&quot; master:masterbranches: only: - hexo源码分支env: global: - GH_REF: 仓库地址 第三步， 将本地项目推送到github仓库存放hexo源码的分支下。 第四步，在travis-ci官网部署仓库access-token(在github中 setting - Devloper settings - Personal access tokens 下获取), 大功告成！]]></content>
+      <categories>
+        <category>学习笔记</category>
+      </categories>
+      <tags>
+        <tag>DevOps</tag>
+      </tags>
+  </entry>
+</search>
